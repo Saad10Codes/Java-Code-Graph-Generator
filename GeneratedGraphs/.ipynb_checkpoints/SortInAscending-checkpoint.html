@@ -1,0 +1,172 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1200px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "SortList", "label": "SortList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "Node", "label": "Node", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "data", "label": "data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "previous", "label": "previous", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "next", "label": "next", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::this.data:data", "label": "assign::this.data:data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "head", "label": "head", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "tail", "label": "tail", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "addNode", "label": "addNode", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "newNode", "label": "newNode", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "if_1", "label": "if_1", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "else_1", "label": "else_1", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "head==null", "label": "head==null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "compareEqualTo::head:null", "label": "compareEqualTo::head:null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::head:tail=newNode", "label": "assign::head:tail=newNode", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::tail:newNode", "label": "assign::tail:newNode", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::head.previous:null", "label": "assign::head.previous:null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::tail.next:null", "label": "assign::tail.next:null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::tail.next:newNode", "label": "assign::tail.next:newNode", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::newNode.previous:tail", "label": "assign::newNode.previous:tail", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "sortList", "label": "sortList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "current", "label": "current", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "index", "label": "index", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "temp", "label": "temp", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "if_2", "label": "if_2", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "else_2", "label": "else_2", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "for_1", "label": "for_1", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "current.next!=null", "label": "current.next!=null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::current:head", "label": "assign::current:head", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::current:current.next", "label": "assign::current:current.next", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "for_2", "label": "for_2", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "index!=null", "label": "index!=null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::index:current.next", "label": "assign::index:current.next", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::index:index.next", "label": "assign::index:index.next", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "if_3", "label": "if_3", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "current.data\u003eindex.data", "label": "current.data\u003eindex.data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "compareGreaterThanOrEqual::current.data:index.data", "label": "compareGreaterThanOrEqual::current.data:index.data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::temp:current.data", "label": "assign::temp:current.data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::current.data:index.data", "label": "assign::current.data:index.data", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "assign::index.data:temp", "label": "assign::index.data:temp", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "display", "label": "display", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "if_4", "label": "if_4", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "System", "label": "System", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "out", "label": "out", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "println_from:System.out", "label": "println_from:System.out", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "\"List is empty\"", "label": "\"List is empty\"", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "println", "label": "println", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "while_1", "label": "while_1", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "current!=null", "label": "current!=null", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "print_from:System.out", "label": "print_from:System.out", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "current.data+\" \"", "label": "current.data+\" \"", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "print", "label": "print", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": ")", "label": ")", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "main", "label": "main", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "args", "label": "args", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "dList", "label": "dList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "addNode_from:dList", "label": "addNode_from:dList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "7", "label": "7", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "1", "label": "1", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "4", "label": "4", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "5", "label": "5", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "2", "label": "2", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "\"Original list: \"", "label": "\"Original list: \"", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "display_from:dList", "label": "display_from:dList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "sortList_from:dList", "label": "sortList_from:dList", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "red", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "\"Sorted list: \"", "label": "\"Sorted list: \"", "labelHighlightBold": true, "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "lightblue", "from": "SortList", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "SortList", "label": "contains", "to": "tail"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "contains", "to": "data"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "parameter", "to": "data"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "contains", "to": "previous"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "contains", "to": "Node"}, {"arrows": "to", "color": "lightblue", "from": "Node", "label": "contains", "to": "assign::this.data:data"}, {"arrows": "to", "color": "lightblue", "from": "addNode", "label": "parameter", "to": "data"}, {"arrows": "to", "color": "lightblue", "from": "addNode", "label": "contains", "to": "newNode"}, {"arrows": "to", "color": "lightblue", "from": "addNode", "label": "contains", "to": "Node"}, {"arrows": "to", "color": "lightblue", "from": "addNode", "label": "contains", "to": "if_1"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "else_1"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "assign::tail.next:newNode"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "tail"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "newNode"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "assign::newNode.previous:tail"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "previous"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "assign::tail:newNode"}, {"arrows": "to", "color": "lightblue", "from": "if_1", "label": "contains", "to": "assign::tail.next:null"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "condition", "to": "head==null"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "compareEqualTo::head:null"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "assign::head:tail=newNode"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "assign::tail:newNode"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "tail"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "newNode"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "assign::head.previous:null"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "previous"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "assign::tail.next:null"}, {"arrows": "to", "color": "lightblue", "from": "else_1", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "sortList", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "sortList", "label": "contains", "to": "index"}, {"arrows": "to", "color": "lightblue", "from": "sortList", "label": "contains", "to": "temp"}, {"arrows": "to", "color": "lightblue", "from": "sortList", "label": "contains", "to": "if_2"}, {"arrows": "to", "color": "lightblue", "from": "if_2", "label": "contains", "to": "else_2"}, {"arrows": "to", "color": "lightblue", "from": "if_2", "label": "contains", "to": "for_1"}, {"arrows": "to", "color": "lightblue", "from": "else_2", "label": "condition", "to": "head==null"}, {"arrows": "to", "color": "lightblue", "from": "else_2", "label": "contains", "to": "compareEqualTo::head:null"}, {"arrows": "to", "color": "lightblue", "from": "else_2", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "condition", "to": "current.next!=null"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "assign::current:head"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "assign::current:current.next"}, {"arrows": "to", "color": "lightblue", "from": "for_1", "label": "contains", "to": "for_2"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "condition", "to": "index!=null"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "assign::index:current.next"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "index"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "assign::index:index.next"}, {"arrows": "to", "color": "lightblue", "from": "for_2", "label": "contains", "to": "if_3"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "condition", "to": "current.data\u003eindex.data"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "compareGreaterThanOrEqual::current.data:index.data"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "data"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "index"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "assign::temp:current.data"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "temp"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "assign::current.data:index.data"}, {"arrows": "to", "color": "lightblue", "from": "if_3", "label": "contains", "to": "assign::index.data:temp"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "if_4"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "while_1"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "System"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "out"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "println_from:System.out"}, {"arrows": "to", "color": "lightblue", "from": "display", "label": "contains", "to": "println"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "condition", "to": "head==null"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "compareEqualTo::head:null"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "head"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "System"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "out"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "println_from:System.out"}, {"arrows": "to", "color": "lightblue", "from": "if_4", "label": "contains", "to": "println"}, {"arrows": "to", "color": "lightblue", "from": "println_from:System.out", "label": "parameters", "to": "\"List is empty\""}, {"arrows": "to", "color": "lightblue", "from": "println_from:System.out", "label": "parameters", "to": ")"}, {"arrows": "to", "color": "lightblue", "from": "println_from:System.out", "label": "parameters", "to": "\"Original list: \""}, {"arrows": "to", "color": "lightblue", "from": "println_from:System.out", "label": "parameters", "to": "\"Sorted list: \""}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "condition", "to": "current!=null"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "current"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "System"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "out"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "print_from:System.out"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "print"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "data"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "assign::current:current.next"}, {"arrows": "to", "color": "lightblue", "from": "while_1", "label": "contains", "to": "next"}, {"arrows": "to", "color": "lightblue", "from": "print_from:System.out", "label": "parameters", "to": "current.data+\" \""}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "parameter", "to": "args"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "SortList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "addNode"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "System"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "out"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "println_from:System.out"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "println_from:System.out"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "println"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "display_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "display_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "display"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "sortList_from:dList"}, {"arrows": "to", "color": "lightblue", "from": "main", "label": "contains", "to": "sortList"}, {"arrows": "to", "color": "lightblue", "from": "addNode_from:dList", "label": "parameters", "to": "7"}, {"arrows": "to", "color": "lightblue", "from": "addNode_from:dList", "label": "parameters", "to": "1"}, {"arrows": "to", "color": "lightblue", "from": "addNode_from:dList", "label": "parameters", "to": "4"}, {"arrows": "to", "color": "lightblue", "from": "addNode_from:dList", "label": "parameters", "to": "5"}, {"arrows": "to", "color": "lightblue", "from": "addNode_from:dList", "label": "parameters", "to": "2"}, {"arrows": "to", "color": "lightblue", "from": "display_from:dList", "label": "parameters", "to": ")"}, {"arrows": "to", "color": "lightblue", "from": "display_from:dList", "label": "parameters", "to": ")"}, {"arrows": "to", "color": "lightblue", "from": "sortList_from:dList", "label": "parameters", "to": ")"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "nodes",
+            "edges",
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
